@@ -1,4 +1,4 @@
-Source: arch/riscv/boot/dts/ky/x1.dtsi (linux-orangepi, branch orange-pi-6.6-ky)
+/* Source: arch/riscv/boot/dts/ky/x1.dtsi (linux-orangepi, branch orange-pi-6.6-ky) */
 
 
 // SPDX-License-Identifier: (GPL-2.0 OR MIT)
