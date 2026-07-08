@@ -1,0 +1,25 @@
+Source: x1.dtsi
+
+The console UART that is required:
+
+uart0: serial@d4017000 {
+			compatible = "ky,pxa-uart";
+			reg = <0x0 0xd4017000 0x0 0x100>;
+			interrupt-parent = <&intc>;
+			interrupts = <42>;
+			clocks = <&ccu CLK_UART1>, <&ccu CLK_SLOW_UART>;
+			clock-names = "func", "gate";
+			clk-fpga = <14750000>;
+			resets = <&reset RESET_UART1>;
+			power-domains = <&power X1_PMU_BUS_PWR_DOMAIN>;
+			clk,pm-runtime,no-sleep;
+			cpuidle,pm-runtime,sleep;
+			dmas = <&pdma0 DMA_UART0_RX 1
+				&pdma0 DMA_UART0_TX 1>;
+			dma-names = "rx", "tx";
+			interconnects = <&dram_range4>;
+			interconnect-names = "dma-mem";
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			status = "ok";
+		       };
