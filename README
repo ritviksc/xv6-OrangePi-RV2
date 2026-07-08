@@ -1,6 +1,6 @@
 xv6 for the OrangePi RV2
-All of the required specifications are located in /rv2specs
-and derived from the linux kernel for Orange Pi
+All of the required specifications are located in rv2specs
+and derived from the linux-orangepi repo - branch orange-pi-6.6-ky.
 
 xv6 is a re-implementation of Dennis Ritchie's and Ken Thompson's Unix
 Version 6 (v6).  xv6 loosely follows the structure and style of v6,
