@@ -59,7 +59,7 @@ timerinit()
   w_mcounteren(r_mcounteren() | 2);
 
   // ask for the very first timer interrupt.
-  // timebase freqency of RV2 is 24MHz
+  // timebase frequency of RV2 is 24MHz
   // Target: ~~10 interrupts per second
   // Ticks: 24000000 / 10 = 2400000
   w_stimecmp(r_time() + 2400000);
