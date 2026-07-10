@@ -14,6 +14,7 @@ main()
     consoleinit();
     printkinit();
     printk("\n");
+    printk("DEVICE:OrangePi RV2\n");
     printk("xv6 kernel is booting\n");
     printk("\n");
     kinit();            // physical page allocator
