@@ -4,7 +4,8 @@ and derived from the linux-orangepi repo - branch orange-pi-6.6-ky.
 
 NOTE
 
-This project focuses on porting xv6-riscv to the Orange Pi RV2 and extending the kernel with virtual memory features (my extension to the port). 
+This project focuses on porting xv6-riscv to the Orange Pi RV2 and extending the kernel with virtual memory features (my extension to the port).
+You can find my work in N/A.
 Additional hardware support, such as networking, graphical output, USB, and other peripherals, is outside the scope of this project. 
 These features could be implemented by future contributors who wish to extend the platform.
 
