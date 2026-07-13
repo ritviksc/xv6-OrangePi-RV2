@@ -1,7 +1,8 @@
+/* Source: arch/riscv/boot/dts/ky/x1_orangepi-rv2.dtsi (linux-orangepi, branch orange-pi-6.6-ky) */
+
 // SPDX-License-Identifier: (GPL-2.0 OR MIT)
 /* Copyright (c) 2023 Ky, Inc */
 
-/* Source: arch/riscv/boot/dts/ky/x1_orangepi-rv2.dtsi (linux-orangepi, branch orange-pi-6.6-ky) */
 
 /dts-v1/;
 
