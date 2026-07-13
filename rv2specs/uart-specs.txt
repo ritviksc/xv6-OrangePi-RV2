@@ -1,5 +1,14 @@
 Source: x1.dtsi
 
+Baud Rate is 115200 - no parity - 8 data bits
+Divisor in this case is Frequency/(16 * Baud Rate)
+14750000/(16 * 115200) so 0x0008 where MSB = 0x00 and LSB = 0x08
+
+chosen {
+		bootargs = "earlycon=sbi console=ttyS0,115200n8 loglevel=8 swiotlb=65536 rdinit=/init";
+		stdout-path = "serial0:115200n8";
+	};
+
 The console UART that is required:
 
 uart0: serial@d4017000 {
@@ -23,13 +32,3 @@ uart0: serial@d4017000 {
 			reg-io-width = <4>;
 			status = "ok";
 		       };
-
-Baud Rate is 115200 - no parity - 8 data bits
-Divisor in this case is Frequency/16 * Baud Rate
-14750000/16 * 115200 so ~~ 0x0008 where MSB = 0x00 and LSB = 0x08
-
-
-chosen {
-		bootargs = "earlycon=sbi console=ttyS0,115200n8 loglevel=8 swiotlb=65536 rdinit=/init";
-		stdout-path = "serial0:115200n8";
-	};
