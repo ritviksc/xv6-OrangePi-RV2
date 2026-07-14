@@ -27,7 +27,7 @@ start()
 	
   // OpenSBI only configures hart 0, so
   // we must start the remaining harts
-  // via a SBI call
+  // via a SBI call.
   if (cpuid() == 0) {
     for (uint64 i = 1; i < NCPU; i++){
       long err = sbi_hart_start(i,(uint64)_entry,0);
@@ -38,7 +38,7 @@ start()
     }
   }
 
-  main();   // no mret -- call main directly
+  main();   // no mret - call main directly
 }
 
 void
