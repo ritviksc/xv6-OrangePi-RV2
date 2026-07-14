@@ -4,63 +4,47 @@
 #include "riscv.h"
 #include "defs.h"
 
-void main();
+extern void _entry();
+extern void sbi_hart_start(uint64 hartid, uint64 start_addr, uint64 opaque);
+extern void main();
 void timerinit();
 
 // entry.S needs one stack per CPU.
 __attribute__((aligned(16))) char stack0[4096 * NCPU];
 
-// entry.S jumps here in machine mode on stack0.
+// if any harts fail to start up - record them
+bool hart_start_failed[NCPU];
+
+// entry.S jumps here in supervisor mode on stack0.
 void
 start()
 {
-  // set M Previous Privilege mode to Supervisor, for mret.
-  unsigned long x = r_mstatus();
-  x &= ~MSTATUS_MPP_MASK;
-  x |= MSTATUS_MPP_S;
-  w_mstatus(x);
-
-  // set M Exception Program Counter to main, for mret.
-  // requires gcc -mcmodel=medany
-  w_mepc((uint64)main);
-
-  // disable paging for now.
-  w_satp(0);
-
-  // delegate all interrupts and exceptions to supervisor mode.
-  w_medeleg(0xffff);
-  w_mideleg(0xffff);
+  w_satp(0); // paging is off temporarily
+	     
+  // enables S-mode to receive these interrupt types once they arrive
   w_sie(r_sie() | SIE_SEIE | SIE_STIE);
-
-  // configure Physical Memory Protection to give supervisor mode
-  // access to all of physical memory.
-  w_pmpaddr0(0x3fffffffffffffull);
-  w_pmpcfg0(0xf);
-
-  // ask for clock interrupts.
   timerinit();
+	
+  // OpenSBI only configures hart 0, so
+  // we must start the remaining harts
+  // via a SBI call
+  if (cpuid() == 0) {
+    for (uint64 i = 1; i < NCPU; i++){
+      long err = sbi_hart_start(i,(uint64)_entry,0);
+      if (err != 0) {
+        hart_start_failed[i] = true;    
+      }
 
-  // keep each CPU's hartid in its tp register, for cpuid().
-  int id = r_mhartid();
-  w_tp(id);
+    }
+  }
 
-  // switch to supervisor mode and jump to main().
-  asm volatile("mret");
+  main();   // no mret -- call main directly
 }
 
-// ask each hart to generate timer interrupts.
 void
 timerinit()
 {
-  // enable the sstc extension (i.e. stimecmp).
-  w_menvcfg(r_menvcfg() | (1L << 63));
 
-  // allow supervisor to use stimecmp and time.
-  w_mcounteren(r_mcounteren() | 2);
-
-  // ask for the very first timer interrupt.
-  // timebase frequency of RV2 is 24MHz
-  // Target: ~~10 interrupts per second
-  // Ticks: 24000000 / 10 = 2400000
-  w_stimecmp(r_time() + 2400000);
+  // ask for the very first timer interrupt, TIMER_TICKS from now
+  w_stimecmp(r_time() + TIMER_TICKS);
 }
