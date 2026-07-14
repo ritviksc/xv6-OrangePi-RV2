@@ -1,4 +1,5 @@
 // clang-format off
+
 struct buf;
 struct context;
 struct file;
@@ -119,6 +120,9 @@ void            acquiresleep(struct sleeplock*);
 void            releasesleep(struct sleeplock*);
 int             holdingsleep(struct sleeplock*);
 void            initsleeplock(struct sleeplock*, char*);
+
+// start.c
+extern bool hart_start_failed[];
 
 // string.c
 int             memcmp(const void*, const void*, uint);
