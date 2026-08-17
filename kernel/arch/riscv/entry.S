@@ -1,6 +1,6 @@
         # UBoot starts running on hart 0 and makes it jump to _entry
 	# hart 0 wakes up the remaining harts and they jump to _entry
-
+ 
         # kernel.ld causes the following code to
         # be placed at 0x11000000.
 
