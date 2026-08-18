@@ -34,11 +34,12 @@ CFLAGS += -mcmodel=medany
 CFLAGS += -ffreestanding
 CFLAGS += -fno-common
 CFLAGS += -nostdlib
+CFLAGS += -nostdlibinc
 CFLAGS += -fno-builtin-strncpy -fno-builtin-strncmp -fno-builtin-strlen
 CFLAGS += -fno-builtin-memset -fno-builtin-memmove -fno-builtin-memcmp
 CFLAGS += -fno-builtin-memcpy -fno-builtin-bzero
 CFLAGS += -Wno-main
-CFLAGS += -I.
+CFLAGS += -I include
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]no-pie'),)
