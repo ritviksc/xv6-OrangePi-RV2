@@ -1,0 +1,11 @@
+Source: drivers/irqchip/irq-sifive-plic.c (linux-orangepi, branch orange-pi-6.6-ky)
+
+PLIC base address: 0xE0000000
+Register offsets (CONFIG_SOC_KY variant):
+  PRIORITY_BASE        0x0       
+  PRIORITY_PER_ID      0x4       (4 bytes per interrupt ID)
+  PENDING_BASE         0x1000
+  CONTEXT_ENABLE_BASE  0x2080    (size 0x100 per context)
+  CONTEXT_BASE         0x201000  (size 0x2000 per context)
+  CONTEXT_THRESHOLD    0x00
+  CONTEXT_CLAIM        0x04
