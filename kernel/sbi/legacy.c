@@ -13,15 +13,15 @@ sbi_lgcy_ecall(
 )
 {
   // Make sure legacy convention is followed
-  volatile register sbi_eid_t eid_val  __asm__("a7") = eid;
-  volatile register sbi_arg_t arg0_val __asm__("a0") = arg0;
-  volatile register sbi_arg_t arg1_val __asm__("a1") = arg1;
-  volatile register sbi_arg_t arg2_val __asm__("a2") = arg2;
-  volatile register sbi_arg_t arg3_val __asm__("a3") = arg3;
-  volatile register sbi_arg_t arg4_val __asm__("a4") = arg4;
-  volatile register sbi_arg_t arg5_val __asm__("a5") = arg5;
+  register sbi_eid_t eid_val  __asm__("a7") = eid;
+  register sbi_arg_t arg0_val __asm__("a0") = arg0;
+  register sbi_arg_t arg1_val __asm__("a1") = arg1;
+  register sbi_arg_t arg2_val __asm__("a2") = arg2;
+  register sbi_arg_t arg3_val __asm__("a3") = arg3;
+  register sbi_arg_t arg4_val __asm__("a4") = arg4;
+  register sbi_arg_t arg5_val __asm__("a5") = arg5;
 
-  volatile __asm__(
+  __asm__ volatile (
        "ecall"
        : "+r"(arg0_val)
        : "r"(arg1_val),
@@ -55,7 +55,7 @@ sbi_console_putchar(sbi_arg_t ch)
 }
 
 // Read a char from debug console
-// Returns 0 upon success or -1 for failure
+// Returns value of char  upon success or -1 for failure
 sbi_ret_t
 sbi_console_getchar(void)
 {
@@ -76,7 +76,7 @@ sbi_clear_ipi(void)
 sbi_ret_t
 sbi_send_ipi(const sbi_arg_t *hart_mask)
 {
-  return ret_val = sbi_lgcy_ecall(SBI_LGCY_SEND_IPI,(sbi_arg_t)hart_mask,0,0,0,0,0);
+  return sbi_lgcy_ecall(SBI_LGCY_SEND_IPI,(sbi_arg_t)hart_mask,0,0,0,0,0);
 }
 
 // Instructs remote harts to execute the FENC.I instruction
@@ -115,7 +115,7 @@ sbi_remote_sfence_vma_asid(const sbi_arg_t *hart_mask,
 // Doesn't return irrespective of the call fails or succeeds
 void sbi_shutdown(void)
 {
-  return sbi_lgcy_ecall(SBI_LGCY_SHUTDOWN,0,0,0,0,0,0);
+  sbi_lgcy_ecall(SBI_LGCY_SHUTDOWN,0,0,0,0,0,0);
 }
 
 
