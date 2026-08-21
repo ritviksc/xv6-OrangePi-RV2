@@ -23,7 +23,7 @@ sbi_ecall(
   volatile register sbi_arg_t arg4_val __asm__("a4") = arg4;
   volatile register sbi_arg_t arg5_val __asm__("a5") = arg5;
 
-  volatile __asm__(
+  __asm__ volatile (
        "ecall"
        : "+r"(arg0_val),
 	 "+r"(arg1_val)

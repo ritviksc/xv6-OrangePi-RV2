@@ -29,10 +29,10 @@ struct sbiret {
   sbi_ret_t value;
 };
 
-/* An ECALL is used as the control transfer instruction between the supervisor and the SEE
+/* An ecall is used as the control transfer instruction between the supervisor and the SEE
    a7 contains the SBI extension ID (EID)
    a6 encodes  the SBI function ID (FID)
-   a0-a5 are inputs for the specfic function
+   a0-a5 are inputs for the specfic function (not all maybe used - NULLIFY leftovers)
    Both EID and FID are encoded as signed 32-bit integers
    All registers except a0 and a1 must be preservered across an SBI call
    SBI functions return the structure sbiret 

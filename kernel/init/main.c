@@ -1,6 +1,6 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
+#include <xv6/types.h>
+#include <xv6/param.h>
+#include <arch/riscv/rv2memlayout.h>
 #include "riscv.h"
 #include "defs.h"
 
@@ -17,17 +17,6 @@ main()
     printk("DEVICE:%s\n",DEVICE_NAME);
     printk("xv6 kernel is booting\n");
     printk("\n");
-
-    // Check if any harts are not starting
-    // and report them and continue as normal.
-    // If required to be implemented, let user decide to continue using device
-    // or quit.
-    for (int i = 1; i < NCPU; i++) {
-      if (hart_start_failed[i]) {
-        printk("hart %d failed to start\n", i);
-      }
-    }
-
     kinit();            // physical page allocator
     kvminit();          // create kernel page table
     kvminithart();      // turn on paging
