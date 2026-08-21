@@ -6,10 +6,9 @@
 
 	# Note - bootloader loads the kernel in S-mode
 	# The RISC-V kernel expects the following of bootloaders and platform firmware:
-	# $a0 to contain the hartid of the current core.
-	# $a1 to contain the address of the devicetree in memory.
+	# a0 to contain the hartid of the current core.
+	# a1 to contain the address of the devicetree in memory.
 	# xv6 doesn't require the devicetree at the moment - it uses memlayout.h
-
 .section .text
 .global _entry
 _entry:
@@ -27,7 +26,19 @@ _entry:
         addi a3, tp, 1  
         mul a2, a2, a3 	
         add sp, sp, a2
+
+# hart 0 is responsible for clearing bss section
+bss_init:
+	la t0,bss_start
+	la t1,bss_end
+clear_bss:
+	bge t0,t1, call_start
+	sd zero, 0(t0)
+	addi t0,t0,8
+	j clear_bss
+
+call_start:
         # jump to start() in start.c
         call start
 spin:
-        j spin
+        j spin # Should not reach here!
