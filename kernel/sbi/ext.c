@@ -14,14 +14,14 @@ sbi_ecall(
 )
 {
   // Make sure modern convention is followed
-  volatile register sbi_eid_t eid_val  __asm__("a7") = eid;
-  volatile register sbi_fid_t fid_val  __asm__("a6") = fid;
-  volatile register sbi_arg_t arg0_val __asm__("a0") = arg0;
-  volatile register sbi_arg_t arg1_val __asm__("a1") = arg1;
-  volatile register sbi_arg_t arg2_val __asm__("a2") = arg2;
-  volatile register sbi_arg_t arg3_val __asm__("a3") = arg3;
-  volatile register sbi_arg_t arg4_val __asm__("a4") = arg4;
-  volatile register sbi_arg_t arg5_val __asm__("a5") = arg5;
+  register sbi_eid_t eid_val  __asm__("a7") = eid;
+  register sbi_fid_t fid_val  __asm__("a6") = fid;
+  register sbi_arg_t arg0_val __asm__("a0") = arg0;
+  register sbi_arg_t arg1_val __asm__("a1") = arg1;
+  register sbi_arg_t arg2_val __asm__("a2") = arg2;
+  register sbi_arg_t arg3_val __asm__("a3") = arg3;
+  register sbi_arg_t arg4_val __asm__("a4") = arg4;
+  register sbi_arg_t arg5_val __asm__("a5") = arg5;
 
   __asm__ volatile (
        "ecall"
