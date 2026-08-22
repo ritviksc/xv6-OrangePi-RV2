@@ -1,5 +1,5 @@
 #include <sbi/probe.h>
-
+#include <sbi/sbi_ext.h>
 
 struct sbiret 
 sbi_get_spec_version(void)
