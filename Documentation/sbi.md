@@ -1,3 +1,4 @@
+## The RV2 ubuntu image uses:  
 SBI 1.0  
 OpenSBI 1.3  
 Machine:  
@@ -18,4 +19,24 @@ SBI Base Functionality
 IPI Extension  
 RFENCE Extension  
 Hart State Management Extension  
-Performance Monitoring Unit Extension  
+Performance Monitoring Unit Extension 
+
+## MODERN EXTENSIONS PROBE OUTPUT  
+SBI extension supported: BASE  
+SBI extension not supported: TIME  
+SBI extension supported: IPI  
+SBI extension supported: RFNC  
+SBI extension supported: HSM  
+SBI extension not supported: SRST  
+SBI extension supported: PMU  
+SBI extension supported: DBCN  
+SBI extension supported: SUSP  
+SBI extension not supported: CPPC  
+SBI extension not supported: NACL  
+SBI extension not supported: STA  
+SBI extension not supported: SSE  
+SBI extension not supported: FWFT  
+SBI extension not supported: DBTR  
+SBI extension not supported: MPXY  
+  
+If the other extensions are required use an updated version of OpenSBI.  
