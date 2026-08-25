@@ -21,8 +21,7 @@
 */
 
 /*
- 
-static function in sbi/legacy.c
+ static function in sbi/legacy.c
 sbi_ret_t 
 sbi_lgcy_ecall(
     sbi_eid_t eid,

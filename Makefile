@@ -25,6 +25,8 @@ OBJS = \
         $(B)/sbi/legacy.o \
         $(B)/sbi/ext.o \
         $(B)/sbi/probe.o \
+	$(B)/trap/kernelvec.o \
+        $(B)/trap/simple_trap.o
 
 ifndef TOOLPREFIX
 TOOLPREFIX := $(shell if riscv64-unknown-elf-objdump -i 2>&1 | grep 'elf64-big' >/dev/null 2>&1; \

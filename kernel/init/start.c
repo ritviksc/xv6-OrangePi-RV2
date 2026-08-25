@@ -3,10 +3,11 @@
 #include <arch/riscv/rv2/memlayout.h>
 #include <arch/riscv/riscv.h>
 #include <xv6/defs.h>
+#include <sbi/sbi_legacy.h>
 
-extern void _entry();
+extern void kernelvec();
 extern void main();
-void timerinit();
+// void timerinit();
 
 // entry.S needs one stack per CPU.
 __attribute__((aligned(16))) char stack0[4096 * NCPU];
@@ -18,19 +19,14 @@ start()
   w_satp(0); // paging is off temporarily
 	     
   // enables S-mode to receive these interrupt types once they arrive
-  // w_sie(r_sie() | SIE_SEIE | SIE_STIE);
-  // timerinit();
-	
-  // OpenSBI only configures hart 0, so
-  // we must start the remaining harts
-  // via a SBI call.
-  // if (cpuid() == 0) {
-    // Start up remaining harts and make them jump to _sentry
-  // }
+  w_sie(r_sie() | SIE_SEIE | SIE_STIE);
+  sbi_set_timer(TIMER_TICKS);
+  w_stvec((uint64)kernelvec);
 
   main();   // no mret - call main directly
 }
 
+/*
 void
 timerinit()
 {
@@ -38,3 +34,4 @@ timerinit()
   // ask for the very first timer interrupt, TIMER_TICKS from now
   w_stimecmp(r_time() + TIMER_TICKS);
 }
+*/
