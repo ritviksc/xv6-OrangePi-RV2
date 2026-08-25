@@ -1,7 +1,7 @@
 #include <sbi/sbi_ext.h>
 
 // Invoke SBI functions using ecall
-static struct sbiret
+struct sbiret
 sbi_ecall(
     sbi_eid_t eid,
     sbi_fid_t fid,
