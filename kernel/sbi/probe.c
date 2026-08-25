@@ -25,7 +25,7 @@ sbi_get_impl_version(void)
 struct sbiret
 sbi_probe_extension(sbi_eid_t eid)
 {
-  return sbi_ecall(SBI_BASE_EXT,SBI_PROBE_EXT,0,0,0,0,0,0);
+  return sbi_ecall(SBI_BASE_EXT,SBI_PROBE_EXT,eid,0,0,0,0,0);
 }
 
 struct sbiret
@@ -37,7 +37,7 @@ sbi_get_mvendorid(void)
 struct sbiret
 sbi_get_marchid(void)
 {
-  return sbi_ecall(SBI_BASE_EXT,SBI_MARCH_ID,0,0,0,0,0,0);
+  return sbi_ecall(SBI_BASE_EXT,SBI_MARCH,0,0,0,0,0,0);
 }
 
 struct sbiret
