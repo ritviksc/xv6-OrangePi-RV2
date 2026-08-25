@@ -22,7 +22,9 @@ OBJS = \
 	$(B)/init/start.o \
 	$(B)/init/test_main.o \
 	$(B)/drivers/uart/sbi_uart.o \
-        $(B)/sbi/legacy.o
+        $(B)/sbi/legacy.o \
+        $(B)/sbi/ext.o \
+        $(B)/sbi/probe.o \
 
 ifndef TOOLPREFIX
 TOOLPREFIX := $(shell if riscv64-unknown-elf-objdump -i 2>&1 | grep 'elf64-big' >/dev/null 2>&1; \
@@ -64,6 +66,7 @@ CFLAGS += -fno-builtin-memcmp
 CFLAGS += -fno-builtin-memcpy
 CFLAGS += -fno-builtin-bzero
 CFLAGS += -Wno-main
+CFLAGS += -Os
 CFLAGS += -I$(K)/$(I)
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 
