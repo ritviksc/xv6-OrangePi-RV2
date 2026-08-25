@@ -8,7 +8,7 @@
 void 
 uart_putc(char c)
 {
-  sbi_console_putchar((unsigned char)c);
+  sbi_console_putchar((uchar)c);
 }
 
 // Get char from debug console
