@@ -2,7 +2,7 @@
 #include <sbi/sbi_legacy.h>
 
 // Simple UART driver that uses SBI calls to interact with the UART device
-// Useful for simple debugging
+// Useful for simple debugging, but not recommended to use in production setting
 
 // Send a char to debug console
 void 
@@ -16,7 +16,7 @@ int
 uart_getc(void)
 {
   int c;
-  if ( (c = sbi_console_getchar()) < 0)
+  if ( (c = sbi_console_getchar()) < 0) // no character to read
     return -1;
   else
     return c;
@@ -30,4 +30,11 @@ uart_puts(const char *s)
     uart_putc(*s);
     s++;
  }
+}
+
+// @empty
+void uart_init()
+{
+  /* We don't need to initalise the UART as 
+     openSBI takes care of that for us */
 }
