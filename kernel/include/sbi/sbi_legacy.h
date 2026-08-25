@@ -20,7 +20,8 @@
    Value returned in a0 register is SBI legacy extension specfic
 */
 
-/* 
+/*
+ 
 static function in sbi/legacy.c
 sbi_ret_t 
 sbi_lgcy_ecall(
@@ -33,6 +34,7 @@ sbi_lgcy_ecall(
     sbi_arg_t arg5
 );
 */
+
 sbi_ret_t sbi_set_timer(sbi_arg_t stime_value);
 sbi_ret_t sbi_console_putchar(sbi_arg_t ch);
 sbi_ret_t sbi_console_getchar(void);
