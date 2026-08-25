@@ -37,6 +37,7 @@ struct sbiret {
    All registers except a0 and a1 must be preservered across an SBI call
    SBI functions return the structure sbiret 
 */
+
 struct sbiret
 sbi_ecall(
     sbi_eid_t eid,
