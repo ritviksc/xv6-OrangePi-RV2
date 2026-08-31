@@ -41,5 +41,6 @@ We know 1 in binary is 0000 0000 0000 0000 0000 0000 0000 0001 (int i = 1;).
 When we try to fetch one byte of i, either we will fetch the MSB or LSB, so 0000 (0)  or 0001 (1). If we retrive 
 1 that means we fetched the LSB, at the lowest address of where the integer is stored at. This matches the little endian definition, and using the same logic if we fetch 0, the machine is big endian.
 
-
-
+#### References
+https://www.freecodecamp.org/news/what-is-endianness-big-endian-vs-little-endian/  
+https://www.spiceworks.com/it-hardware/big-endian-vs-little-endian/
