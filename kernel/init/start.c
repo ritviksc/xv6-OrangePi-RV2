@@ -5,6 +5,8 @@
 #include <xv6/defs.h>
 #include <sbi/sbi_legacy.h>
 
+uint64 time;
+
 extern void kernelvec();
 extern void main();
 // void timerinit();
@@ -17,11 +19,16 @@ void
 start()
 {
   w_satp(0); // paging is off temporarily
-	     
+
+  // Enable interrupts in S-mode
+  w_sstatus(r_sstatus() | SSTATUS_SIE);
+  w_stvec((uint64)kernelvec);	   
+  
   // enables S-mode to receive these interrupt types once they arrive
   w_sie(r_sie() | SIE_SEIE | SIE_STIE);
-  sbi_set_timer(TIMER_TICKS);
-  w_stvec((uint64)kernelvec);
+  
+  time += r_time() + TIMER_TICKS;
+  sbi_set_timer(time);
 
   main();   // no mret - call main directly
 }

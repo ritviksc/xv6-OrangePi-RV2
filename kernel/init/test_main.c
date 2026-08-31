@@ -4,6 +4,7 @@
 #include <sbi/probe.h>
 #include <drivers/uart/uart.h>
 #include <arch/riscv/rv2/memlayout.h>
+#include <arch/riscv/rv2/arch.h>
 
 struct 
 sbi_ext_info {
