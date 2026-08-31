@@ -42,14 +42,14 @@ main(void)
   uart_puts(DEVICE_NAME);
   uart_putc('\n');
 
-  uart_puts("Xv6 kernel booting...");
+  uart_puts("Xv6 kernel booting...\n");
   
 #if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
-    uart_puts("Little endian\n");
+    uart_puts("Little endian architecture detected\n");
 #elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-    uart_puts("Big endian\n");
+    uart_puts("Big endian architecture detected\n");
 #elif defined(__BYTE_ORDER__) && defined(__ORDER_PDP_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_PDP_ENDIAN__)
-    uart_puts("Mixed endianness\n");
+    uart_puts("Mixed endianness detected\n");
 #else
     uart_puts("Endianness undefined\n");
 #endif
@@ -75,7 +75,7 @@ main(void)
   
   // Sleep cpu
   while (1) {
-    uart_puts("foo");
+    uart_puts("w\n");
     //__asm__ volatile ("wfi");
   }
 
