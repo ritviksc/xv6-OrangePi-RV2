@@ -5,11 +5,11 @@
 #include <xv6/defs.h>
 #include <sbi/sbi_legacy.h>
 
-uint64 time;
+uint64 timer;
 
 extern void kernelvec();
 extern void main();
-// void timerinit();
+void timerinit();
 
 // entry.S needs one stack per CPU.
 __attribute__((aligned(16))) char stack0[4096 * NCPU];
@@ -23,22 +23,18 @@ start()
   // Enable interrupts in S-mode
   w_sstatus(r_sstatus() | SSTATUS_SIE);
   w_stvec((uint64)kernelvec);	   
-  
   // enables S-mode to receive these interrupt types once they arrive
   w_sie(r_sie() | SIE_SEIE | SIE_STIE);
   
-  time += r_time() + TIMER_TICKS;
-  sbi_set_timer(time);
+  timerinit();
 
   main();   // no mret - call main directly
 }
 
-/*
 void
 timerinit()
 {
-
   // ask for the very first timer interrupt, TIMER_TICKS from now
-  w_stimecmp(r_time() + TIMER_TICKS);
+  timer += r_time() + TIMER_TICKS;
+  sbi_set_timer(timer);
 }
-*/
