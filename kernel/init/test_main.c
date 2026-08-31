@@ -38,10 +38,21 @@ struct sbi_ext_info extensions[] = {
 void
 main(void)
 {
-  uart_puts("Kernel: xv6\n");
   uart_puts("DEVICE: ");
   uart_puts(DEVICE_NAME);
   uart_putc('\n');
+
+  uart_puts("Xv6 kernel booting...");
+  
+#if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+    uart_puts("Little endian\n");
+#elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+    uart_puts("Big endian\n");
+#elif defined(__BYTE_ORDER__) && defined(__ORDER_PDP_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_PDP_ENDIAN__)
+    uart_puts("Mixed endianness\n");
+#else
+    uart_puts("Endianness undefined\n");
+#endif
 
   struct sbiret pres;
   // Probe extensions 
