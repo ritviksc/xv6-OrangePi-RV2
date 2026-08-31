@@ -38,7 +38,8 @@ struct sbi_ext_info extensions[] = {
 void
 main(void)
 {
-  uart_puts("DEVICE:");
+  uart_puts("Kernel: xv6\n");
+  uart_puts("DEVICE: ");
   uart_puts(DEVICE_NAME);
   uart_putc('\n');
 
@@ -63,7 +64,8 @@ main(void)
   
   // Sleep cpu
   while (1) {
-    __asm__ volatile ("wfi");
+    uart_puts("foo");
+    //__asm__ volatile ("wfi");
   }
 
 }
