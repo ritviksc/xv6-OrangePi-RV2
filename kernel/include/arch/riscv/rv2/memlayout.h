@@ -17,8 +17,6 @@
 // end -- start of kernel page allocation area
 // PHYSTOP -- end RAM used by the kernel
 
-#define DEVICE_NAME "OrangePi RV2" 
-
 #define TIMEBASE_FREQ 24000000L  // 24MHz
 #define TIMER_HZ 10 // timer interrupts per second (~100ms scheduling granularity like QEMU xv6)
 #define TIMER_TICKS (TIMEBASE_FREQ/TIMER_HZ) // clock ticks between one timer interrupt and the next
