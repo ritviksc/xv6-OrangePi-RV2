@@ -21,7 +21,7 @@ OBJS = \
 	$(B)/arch/riscv/entry.o \
 	$(B)/init/start.o \
 	$(B)/init/test_main.o \
-	$(B)/drivers/uart/sbi_uart.o \
+	$(B)/drivers/uart/uart_lite.o \
         $(B)/sbi/legacy.o \
         $(B)/sbi/ext.o \
         $(B)/sbi/probe.o \
