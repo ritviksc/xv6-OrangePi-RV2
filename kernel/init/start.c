@@ -36,5 +36,10 @@ timerinit()
 {
   // ask for the very first timer interrupt, TIMER_TICKS from now
   timer += r_time() + TIMER_TICKS;
-  sbi_set_timer(timer);
+  // sbi_set_timer(timer);
+
+  // The ky x1 supports sstc extension so we can configure timer directly
+  // from S-mode
+  w_stimecmp(timer);
+  
 }
