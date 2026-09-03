@@ -22,6 +22,7 @@ OBJS = \
 	$(B)/init/start.o \
 	$(B)/init/test_main.o \
 	$(B)/drivers/uart/uart_lite.o \
+        $(B)/drivers/watchdog/soc_wdt.o \
         $(B)/sbi/legacy.o \
         $(B)/sbi/ext.o \
         $(B)/sbi/probe.o \
