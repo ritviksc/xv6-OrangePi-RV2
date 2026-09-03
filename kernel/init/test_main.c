@@ -3,6 +3,7 @@
 
 #include <sbi/probe.h>
 #include <drivers/uart/uart.h>
+#include <drivers/watchdog/wdt.h>
 #include <arch/riscv/rv2/memlayout.h>
 #include <arch/riscv/rv2/arch.h>
 
@@ -53,7 +54,10 @@ main(void)
 #else
     uart_puts("Endianness undefined\n");
 #endif
-
+    
+  wdt_start(1000); // 1s timeout
+  wdt_stop();
+  uart_puts("Watchdog disabled!");
   struct sbiret pres;
   // Probe extensions 
   for (uint32 i = 0; i < EXT_TABLE_SIZE; i++) {

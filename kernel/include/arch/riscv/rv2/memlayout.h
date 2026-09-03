@@ -21,8 +21,12 @@
 #define TIMER_HZ 10 // timer interrupts per second (~100ms scheduling granularity like QEMU xv6)
 #define TIMER_TICKS (TIMEBASE_FREQ/TIMER_HZ) // clock ticks between one timer interrupt and the next
 
-#define UART0     0xd4017000L
+#define UART0     0xd4017000UL
 #define UART0_IRQ 42
+
+#define WDT_BASE 0xd4080000UL
+#define WDT_IRQ 35
+
 
 // virtio mmio interface
 // #define VIRTIO0     0x10001000
@@ -38,7 +42,7 @@
 // the kernel expects there to be RAM
 // for use by the kernel and user pages
 // from physical address 0x11000000 to PHYSTOP.
-#define KERNBASE 0x11000000L
+#define KERNBASE 0x11000000UL
 
 // For inital port let system only have 128MB of free RAM
 #define PHYSTOP  (KERNBASE + 128 * 1024 * 1024)
