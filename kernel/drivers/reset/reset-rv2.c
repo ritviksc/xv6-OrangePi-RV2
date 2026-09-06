@@ -13,6 +13,9 @@
    control if we reset or enable clock for a device 
 */
 
+// Width of registers is 4 bytes - 32 bits
+
+#include <xv6/mmio.h>
 #include <xv6/types.h>
 #include <drivers/reset/reset.h>
 

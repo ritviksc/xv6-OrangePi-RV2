@@ -6,6 +6,8 @@
 #ifndef RESET_H
 #define RESET_H
 
+#include <xv6/types.h>
+
 /*
  * A reset is a hardware signal indicating that a HW module (or IP block, or
  * sometimes an entire off-CPU chip) reset all of its internal state to some
@@ -131,10 +133,5 @@
    implemented if you want to do it :)
 */
 void reset_set(uint32 offset, uint32 mask, uint32 set);
-
-
-
-
-
 
 #endif
