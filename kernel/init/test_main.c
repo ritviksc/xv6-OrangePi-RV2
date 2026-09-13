@@ -55,13 +55,21 @@ main(void)
 #else
     uart_puts("Endianness undefined\n");
 #endif
-    
+   
+  int wdt_ret;
+ 
   wdt_start(1000); // 1s timeout
   wdt_stop();
   uart_puts("SoC watchdog disabled!");
 
-  pmic_wdt_start(1000);
-  pmic_wdt_stop();
+  wdt_ret = pmic_wdt_start(1000);
+  if (wdt_ret) 
+    uart_puts("SoC WDT start failed\n");
+  
+  wdt_ret = pmic_wdt_stop();
+  if (wdt_ret) 
+    uart_puts("SoC WDT stop failed\n");
+
   uart_puts("PMIC watchdog disabled!");
 
   struct sbiret pres;
