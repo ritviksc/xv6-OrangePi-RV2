@@ -5,7 +5,10 @@
     * ky_wdt.c
 */
 
+#include <mmio.h>
 #include <xv6/types.h>
+#include <drivers/reset/reset.h>
+#include <drivers/watchdog/wdt.h>
 #include <arch/riscv/rv2/memlayout.h>
 
 /* Register offsets relative to the base address of the WDT */
@@ -40,24 +43,6 @@
 #define WDT_CLK_MASK    0x3
 #define WDT_RESET_BIT   (1UL << 2)
 
-/* Read a 32-bit unsigned value from 
-   memory 
-*/
-static inline uint32 readl(void *addr)
-{
-  return *(volatile uint32 *)addr;
-    
-}
-
-/* Store a 32-bit unsigned value at memory 
-   address addr
-*/
-static inline void writel(uint32 value, void *addr)
-{
-  *((volatile uint32 *)addr) = value;
-  __asm__ volatile("fence iorw, iorw" ::: "memory");
-}
-
 /* Unlock write-protected registers in the wdt
    It expects two key values in sequence, hence use a fence!
    We must do this for every write operation
@@ -66,7 +51,9 @@ static void wdt_write_access(uint64 base)
 {
   // write sequence values
   writel(WDT_WFAR_KEY, (void *)(base + WDT_WFAR_OFFSET));
+  __asm__ volatile("fence iorw, iorw" ::: "memory");
   writel(WDT_WSAR_KEY, (void *)(base + WDT_WSAR_OFFSET));
+  __asm__ volatile("fence iorw, iorw" ::: "memory");
 }
 
 /* Wrapper function to write to specified wdt register
@@ -76,6 +63,7 @@ static void wdt_write(uint32 val, void *reg, uint64 base)
 {
   wdt_write_access(base);
   writel(val, reg);
+  __asm__ volatile("fence iorw, iorw" ::: "memory");
 }
 
 /* Enable WDT clock */
