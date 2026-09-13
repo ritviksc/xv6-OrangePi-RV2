@@ -21,8 +21,12 @@ OBJS = \
 	$(B)/arch/riscv/entry.o \
 	$(B)/init/start.o \
 	$(B)/init/test_main.o \
-	$(B)/drivers/uart/uart_lite.o \
+	$(B)/drivers/uart/sbi_uart.o \
+        $(B)/drivers/watchdog/pmic_wdt.o \
+        $(B)/drivers/i2c/rv2_i2c.o \
+        $(B)/drivers/pmic/pmic.o \
         $(B)/drivers/watchdog/soc_wdt.o \
+        $(B)/drivers/reset/reset.o \
         $(B)/sbi/legacy.o \
         $(B)/sbi/ext.o \
         $(B)/sbi/probe.o \
