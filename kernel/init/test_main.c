@@ -64,11 +64,11 @@ main(void)
 
   wdt_ret = pmic_wdt_start(1000);
   if (wdt_ret) 
-    uart_puts("SoC WDT start failed\n");
+    uart_puts("PMIC WDT start failed\n");
   
   wdt_ret = pmic_wdt_stop();
   if (wdt_ret) 
-    uart_puts("SoC WDT stop failed\n");
+    uart_puts("PMIC WDT stop failed\n");
 
   uart_puts("PMIC watchdog disabled!");
 
