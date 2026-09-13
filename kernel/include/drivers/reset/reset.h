@@ -19,6 +19,8 @@
  * reset controllers set or clear reset signals.
  */
 
+#define RESET_BASE 0xd4050000UL
+
 // Register offsets
 /* APBC register offset */
 #define APBC_UART1_CLK_RST      0x0
