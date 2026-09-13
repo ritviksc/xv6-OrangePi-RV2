@@ -4,6 +4,7 @@
 #include <sbi/probe.h>
 #include <drivers/uart/uart.h>
 #include <drivers/watchdog/wdt.h>
+#include <drivers/watchdog/pmic_wdt.h>
 #include <arch/riscv/rv2/memlayout.h>
 #include <arch/riscv/rv2/arch.h>
 
@@ -57,7 +58,12 @@ main(void)
     
   wdt_start(1000); // 1s timeout
   wdt_stop();
-  uart_puts("Watchdog disabled!");
+  uart_puts("SoC watchdog disabled!");
+
+  pmic_wdt_start(1000);
+  pmic_wdt_stop();
+  uart_puts("PMIC watchdog disabled!");
+
   struct sbiret pres;
   // Probe extensions 
   for (uint32 i = 0; i < EXT_TABLE_SIZE; i++) {
