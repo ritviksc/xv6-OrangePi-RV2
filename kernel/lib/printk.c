@@ -1,19 +1,18 @@
-//
-// formatted console output -- printk, panic.
-//
+/**
+ * Formatted console output -- printk, panic.
+ */
 
 #include <stdarg.h>
 
-#include "types.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "file.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
-#include "proc.h"
+#include <xv6/types.h>
+#include <xv6/param.h>
+#include <drivers/tty/console.h>
+#include <drivers/tty/printk.h>
+#include <locks/spinlock.h>
+#include <locks/sleeplock.h>
+#include <arch/riscv/rv2/memlayout.h>
+#include <arch/riscv/riscv.h>
+#include <proc/proc.h>
 
 volatile int panicking = 0; // printing a panic message
 volatile int panicked = 0;  // spinning forever at end of a panic
@@ -141,12 +140,15 @@ panic(char *s)
   printk("panic: ");
   printk("%s\n", s);
   panicked = 1; // freeze uart output from other CPUs
+  // park other harts
+  // printk(...)
+  // reboot system
   for (;;)
     ;
 }
 
 void
-printkinit(void)
+printkinit()
 {
   initlock(&pr.lock, "pr");
 }
