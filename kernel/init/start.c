@@ -15,20 +15,25 @@ void timerinit();
 __attribute__((aligned(16))) char stack0[4096];
 
 // entry.S jumps here in supervisor mode on stack0.
-void
+__attribute__((noreturn)) void
 start()
 {
   w_satp(0); // paging is off temporarily
 
   // Enable interrupts in S-mode
   w_sstatus(r_sstatus() | SSTATUS_SIE);
-  w_stvec((uint64)kernelvec);	   
+
+  // w_stvec((uint64)kernelvec);
+	   
   // enables S-mode to receive these interrupt types once they arrive
   w_sie(r_sie() | SIE_SEIE | SIE_STIE);
   
   timerinit();
 
-  main();   // no mret - call main directly
+  main();   // no mret - call main directly, this SHOULD NOT RETURN
+
+  __builtin_unreachable();
+
 }
 
 void
