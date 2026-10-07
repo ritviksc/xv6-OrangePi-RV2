@@ -1,6 +1,7 @@
 #include <xv6/types.h>
 #include <xv6/param.h>
 #include <cpu/cpu.h>
+#include <drivers/uart/sbi_uart.h>
 #include <drivers/uart/uart.h>
 #include <drivers/tty/console.h>
 #include <drivers/tty/printk.h>
@@ -52,7 +53,11 @@ main()
 {
   if (cpuid() == 0) {
     consoleinit();
+    uart_puts("A\n");
     printkinit();
+    uart_puts("B\n");
+    printk("C\n");
+    uart_puts("D\n");
     printk("\n");
     printk("DEVICE:%s\n",DEVICE_NAME);
     printk("Xv6 kernel is booting...\n");
