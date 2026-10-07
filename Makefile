@@ -20,18 +20,23 @@ T=trap
 OBJS = \
 	$(B)/arch/riscv/entry.o \
 	$(B)/init/start.o \
-	$(B)/init/test_main.o \
-	$(B)/drivers/uart/sbi_uart.o \
+	$(B)/init/main.o \
+	$(B)/drivers/uart/uart.o \
         $(B)/drivers/watchdog/pmic_wdt.o \
         $(B)/drivers/i2c/rv2_i2c.o \
         $(B)/drivers/pmic/pmic.o \
+        $(B)/drivers/plic/plic.o \
         $(B)/drivers/watchdog/soc_wdt.o \
         $(B)/drivers/reset/reset.o \
         $(B)/sbi/legacy.o \
         $(B)/sbi/ext.o \
         $(B)/sbi/probe.o \
 	$(B)/trap/kernelvec.o \
-        $(B)/trap/simple_trap.o
+        $(B)/trap/trap.o \
+	$(B)/console/console.o \
+	$(B)/lib/printk.o \
+	$(B)/locks/spinlock.o \
+ 	$(B)/cpu/cpu.o \
 
 ifndef TOOLPREFIX
 TOOLPREFIX := $(shell if riscv64-unknown-elf-objdump -i 2>&1 | grep 'elf64-big' >/dev/null 2>&1; \
@@ -76,6 +81,8 @@ CFLAGS += -Wno-main
 CFLAGS += -Os
 CFLAGS += -I$(K)/$(I)
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
+GCC_INC := $(shell $(CC) -print-file-name=include)
+CFLAGS += -I$(GCC_INC)
 
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]no-pie'),)
 CFLAGS += -fno-pie -no-pie
