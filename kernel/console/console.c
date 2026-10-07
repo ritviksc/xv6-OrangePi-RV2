@@ -11,26 +11,29 @@
 
 #include <stdarg.h>
 
-#include "types.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "file.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
-#include "proc.h"
+#include <drivers/uart/uart.h>
+#include <drivers/tty/console.h>
+#include <xv6/types.h>
+#include <xv6/param.h>
+#include <locks/spinlock.h>
+#include <locks/sleeplock.h>
+#include <proc/proc.h>
+// #include "fs.h"
+// #include "file.h"
+// #include "memlayout.h"
+// #include "riscv.h"
+// #include "defs.h"
+// #include "proc.h"
 
 #define BACKSPACE 0x100       // erase the last output character
 #define C(x)      ((x) - '@') // Control-x
 
-//
-// send one character to the uart, but don't use
-// interrupts or sleep(). safe to be called from
-// interrupts, e.g. by printk and to echo input
-// characters.
-//
+/**
+ *  Send one character to the uart, but don't use
+ *  interrupts or sleep(). Safe to be called from
+ *  interrupts, e.g. by printk and to echo input
+ *  characters.
+ */
 void
 consputc(int c)
 {
@@ -44,6 +47,7 @@ consputc(int c)
   }
 }
 
+/*
 struct {
   struct spinlock lock;
 
@@ -54,7 +58,9 @@ struct {
   uint w; // Write index
   uint e; // Edit index
 } cons;
+*/
 
+/*
 //
 // user write() system calls to the console go here.
 // uses sleep() and UART interrupts.
@@ -185,16 +191,17 @@ consoleintr(int c)
 
   release(&cons.lock);
 }
+*/
 
 void
 consoleinit(void)
 {
-  initlock(&cons.lock, "cons");
+  // initlock(&cons.lock, "cons");
 
   uartinit();
 
   // connect read and write system calls
   // to consoleread and consolewrite.
-  devsw[CONSOLE].read = consoleread;
-  devsw[CONSOLE].write = consolewrite;
+  // devsw[CONSOLE].read = consoleread;
+  // devsw[CONSOLE].write = consolewrite;
 }
