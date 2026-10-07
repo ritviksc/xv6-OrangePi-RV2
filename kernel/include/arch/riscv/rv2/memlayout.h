@@ -32,12 +32,14 @@
 // #define VIRTIO0     0x10001000
 // #define VIRTIO0_IRQ 1
 
+/**
 #define PLIC                 0xE0000000L
 #define PLIC_PRIORITY        (PLIC + 0x0)
 #define PLIC_PENDING         (PLIC + 0x1000)
 #define PLIC_SENABLE(hart)   (PLIC + 0x2080 + (hart) * 0x100)
 #define PLIC_SPRIORITY(hart) (PLIC + 0x201000 + (hart) * 0x2000)
 #define PLIC_SCLAIM(hart)    (PLIC + 0x201004 + (hart) * 0x2000)
+*/
 
 // the kernel expects there to be RAM
 // for use by the kernel and user pages

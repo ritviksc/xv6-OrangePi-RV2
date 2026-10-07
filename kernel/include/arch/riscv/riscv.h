@@ -144,9 +144,11 @@ w_mie(uint64 x)
 }
 */
 
-// supervisor exception program counter, holds the
-// instruction address to which a return from
-// exception will go.
+/**
+ * supervisor exception program counter, holds the
+ * instruction address to which a return from
+ * exception will go.
+ */
 static inline void
 w_sepc(uint64 x)
 {
