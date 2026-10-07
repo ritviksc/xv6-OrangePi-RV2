@@ -1,3 +1,10 @@
+#ifndef PROC_H
+#define PROC_H
+
+#include <xv6/types.h>
+#include <xv6/param.h>
+#include <locks/spinlock.h>
+
 // Saved registers for kernel context switches.
 struct context {
   uint64 ra;
@@ -18,6 +25,7 @@ struct context {
   uint64 s11;
 };
 
+/*
 // Per-CPU state.
 struct cpu {
   struct proc *proc;      // The process running on this cpu, or null.
@@ -27,16 +35,19 @@ struct cpu {
 };
 
 extern struct cpu cpus[NCPU];
+*/
 
-// per-process data for the trap handling code in trampoline.S.
-// sits in a page by itself just under the trampoline page in the
-// user page table. not specially mapped in the kernel page table.
-// uservec in trampoline.S saves user registers in the trapframe,
-// then initializes registers from the trapframe's
-// kernel_sp, kernel_hartid, kernel_satp, and jumps to kernel_trap.
-// prepare_return() and userret in trampoline.S set up
-// the trapframe's kernel_*, restore user registers from the
-// trapframe, switch to the user page table, and enter user space.
+/**
+ * Per-process data for the trap handling code in trampoline.S.
+ * sits in a page by itself just under the trampoline page in the
+ * user page table. not specially mapped in the kernel page table.
+ * uservec in trampoline.S saves user registers in the trapframe,
+ * then initializes registers from the trapframe's
+ * kernel_sp, kernel_hartid, kernel_satp, and jumps to kernel_trap.
+ * prepare_return() and userret in trampoline.S set up
+ * the trapframe's kernel_*, restore user registers from the
+ * trapframe, switch to the user page table, and enter user space.
+ */
 struct trapframe {
   /*   0 */ uint64 kernel_satp;   // kernel page table
   /*   8 */ uint64 kernel_sp;     // top of process's kernel stack
@@ -95,10 +106,36 @@ struct proc {
   // these are private to the process, so p->lock need not be held.
   uint64 kstack;               // Virtual address of kernel stack
   uint64 sz;                   // Size of process memory (bytes)
-  pagetable_t pagetable;       // User page table
+  // pagetable_t pagetable;       // User page table
   struct trapframe *trapframe; // data page for trampoline.S
   struct context context;      // swtch() here to run process
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 };
+
+// int             cpuid(void);
+void            kexit(int);
+int             kfork(void);
+int             growproc(int);
+// void            proc_mapstacks(pagetable_t);
+// pagetable_t     proc_pagetable(struct proc *);
+// void            proc_freepagetable(pagetable_t, uint64);
+int             kkill(int);
+int             killed(struct proc*);
+void            setkilled(struct proc*);
+// struct cpu*     mycpu(void);
+struct proc*    myproc();
+void            procinit(void);
+void            scheduler(void) __attribute__((noreturn));
+void            sched(void);
+void            sleep(void*, struct spinlock*);
+void            userinit(void);
+int             kwait(uint64);
+void            wakeup(void*);
+void            yield(void);
+int             either_copyout(int user_dst, uint64 dst, void *src, uint64 len);
+int             either_copyin(void *dst, int user_src, uint64 src, uint64 len);
+void            procdump(void);
+
+#endif

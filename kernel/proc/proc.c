@@ -6,7 +6,7 @@
 #include "proc.h"
 #include "defs.h"
 
-struct cpu cpus[NCPU];
+// struct cpu cpus[NCPU];
 
 struct proc proc[NPROC];
 
@@ -58,6 +58,7 @@ procinit(void)
   }
 }
 
+/*
 // Must be called with interrupts disabled,
 // to prevent race with process being moved
 // to a different CPU.
@@ -77,6 +78,7 @@ mycpu(void)
   struct cpu *c = &cpus[id];
   return c;
 }
+*/
 
 // Return the current struct proc *, or zero if none.
 struct proc *
