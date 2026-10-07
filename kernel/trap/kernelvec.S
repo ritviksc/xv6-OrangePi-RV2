@@ -1,14 +1,22 @@
-        #
-        # interrupts and exceptions while in supervisor
-        # mode come here.
-        #
-        # the current stack is a kernel stack.
-        # push registers, call kerneltrap().
-        # when kerneltrap() returns, restore registers, return.
-        #
-.globl simple_trap
+# interrupts and exceptions while in supervisor
+# mode come here, so in our case when the kernel is running.
+#
+# The current stack is a kernel stack.
+# push registers, call kerneltrap().
+#
+# When kerneltrap() returns from handling the kernel trap,
+# restore registers and return.
+.globl kerneltrap
 .globl kernelvec
+
+# stvec must be aligned to at least a 4 byte boundary so interrupts 
+# use direct mode.
+# the lowest two bits in stvec must be either 01 or 00. 00 for direct mode,
+# or 01 for vectored mode.
+# xv6 aligns it to a 16 byte boundary to make sure we use direct mode 
+# NOTE: align x implies aligning to a 2^x byte boundary (if using GAS)
 .align 4
+
 kernelvec:
         # make room to save registers.
         addi sp, sp, -256
@@ -34,8 +42,8 @@ kernelvec:
         sd t5, 232(sp)
         sd t6, 240(sp)
 
-        # call the simple trap handler
-        call simple_trap
+        # call the kernel trap handler
+        call kerneltrap
 
         # restore registers.
         ld ra, 0(sp)

@@ -1,14 +1,14 @@
-        #
-        # low-level code to handle traps from user space into
-        # the kernel, and returns from kernel to user.
-        #
-        # the kernel maps the page holding this code
-        # at the same virtual address (TRAMPOLINE)
-        # in user and kernel space so that it continues
-        # to work when it switches page tables.
-        # kernel.ld causes this code to start at 
-        # a page boundary.
-        #
+#
+# low-level code to handle traps from user space into
+# the kernel, and returns from kernel to user.
+#
+# the kernel maps the page holding this code
+# at the same virtual address (TRAMPOLINE)
+# in user and kernel space so that it continues
+# to work when it switches page tables.
+# kernel.ld causes this code to start at 
+# a page boundary.
+#
 
 #include "riscv.h"
 #include "memlayout.h"
@@ -17,7 +17,15 @@
 .globl trampoline
 .globl usertrap
 trampoline:
+
+# stvec must be aligned to at least a 4 byte boundary so interrupts 
+# use direct mode.
+# the lowest two bits in stvec must be either 01 or 00. 00 for direct mode,
+# or 01 for vectored mode.
+# xv6 aligns it to a 16 byte boundary to make sure since 
+# NOTE: align x implies aligning to a 2^x byte boundary (if using GAS)
 .align 4
+
 .globl uservec
 uservec:    
 	#
