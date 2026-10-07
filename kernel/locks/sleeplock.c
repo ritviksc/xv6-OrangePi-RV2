@@ -1,4 +1,4 @@
-// Sleeping locks
+// Sleeping lock - a conventional mutex lock
 
 #include "types.h"
 #include "riscv.h"
