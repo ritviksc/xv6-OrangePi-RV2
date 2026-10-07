@@ -1,0 +1,9 @@
+#ifndef SBI_UART_H
+#define SBI_UART_H
+
+void uart_init(void);
+void uart_putc(char c);
+int uart_getc(void);
+void uart_puts(const char *c);
+
+#endif

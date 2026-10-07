@@ -1,4 +1,4 @@
-#include <drivers/uart/uart.h>
+#include <drivers/uart/sbi_uart.h>
 #include <sbi/sbi_legacy.h>
 
 // Simple UART driver that uses SBI calls to interact with the UART device
