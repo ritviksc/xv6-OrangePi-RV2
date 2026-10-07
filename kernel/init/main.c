@@ -104,6 +104,8 @@ main()
     trapinithart();     // install kernel trap vector
     plicinit();         // set up interrupt controller
     plicinithart();     // ask PLIC for device interrupts
+    w_sstatus(r_sstatus() | SSTATUS_SIE);
+    w_sie(r_sie() | SIE_SEIE | SIE_STIE);
     // binit();            // buffer cache
     // iinit();            // inode table
     // fileinit();         // file table

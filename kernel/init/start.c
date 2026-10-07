@@ -4,6 +4,7 @@
 #include <arch/riscv/riscv.h>
 #include <xv6/defs.h>
 #include <sbi/sbi_legacy.h>
+#include <drivers/uart/sbi_uart.h>
 
 uint64 timer;
 
@@ -18,16 +19,21 @@ __attribute__((aligned(16))) char stack0[4096];
 __attribute__((noreturn)) void
 start()
 {
+  uart_puts("start()\n");
+
   w_satp(0); // paging is off temporarily
 
   // Enable interrupts in S-mode
-  w_sstatus(r_sstatus() | SSTATUS_SIE);
+  //  w_sstatus(r_sstatus() | SSTATUS_SIE);
 
   // w_stvec((uint64)kernelvec);
 	   
   // enables S-mode to receive these interrupt types once they arrive
-  w_sie(r_sie() | SIE_SEIE | SIE_STIE);
+  // w_sie(r_sie() | SIE_SEIE | SIE_STIE);
   
+  w_sstatus(r_sstatus() & ~SSTATUS_SIE);
+  w_sie(0);
+
   timerinit();
 
   main();   // no mret - call main directly, this SHOULD NOT RETURN
