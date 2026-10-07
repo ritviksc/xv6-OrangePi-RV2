@@ -58,46 +58,41 @@ main()
     printk("Xv6 kernel is booting...\n");
     printk("\n");
 
-    #if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
-    uart_puts("Little endian architecture detected\n");
+#if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+    printk("Little endian architecture detected\n");
 #elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-    uart_puts("Big endian architecture detected\n");
+    printk("Big endian architecture detected\n");
 #elif defined(__BYTE_ORDER__) && defined(__ORDER_PDP_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_PDP_ENDIAN__)
-    uart_puts("Mixed endianness detected\n");
+    printk("Mixed endianness detected\n");
 #else
-    uart_puts("Endianness undefined\n");
+    printk("Endianness undefined\n");
 #endif
 
+    int wdt_ret;
     wdt_start(1000); // 1s timeout
     wdt_stop();
-    uart_puts("SoC watchdog disabled!");
+    printk("SoC watchdog disabled\n");
 
     wdt_ret = pmic_wdt_start(1000);
     if (wdt_ret)
-      uart_puts("PMIC WDT start failed\n");
+      printk("PMIC WDT start failed\n");
 
     wdt_ret = pmic_wdt_stop();
     if (wdt_ret)
-      uart_puts("PMIC WDT stop failed\n");
+      printk("PMIC WDT stop failed\n");
 
-    uart_puts("PMIC watchdog disabled!");
+    printk("PMIC watchdog disabled!\n");
 
     struct sbiret pres;
     // Probe extensions 
     for (uint32 i = 0; i < EXT_TABLE_SIZE; i++) {
       pres = sbi_probe_extension(extensions[i].eid);
       if (pres.error != SBI_SUCCESS) {
-        uart_puts("PROBE FAILED: ");
-        uart_puts(extensions[i].ext_name);
-        uart_putc('\n');
+        printk("PROBE FAILED: %s\n", extensions[i].ext_name);
       } else if (pres.value == 0) {
-        uart_puts("SBI extension not supported: ");
-        uart_puts(extensions[i].ext_name);
-        uart_putc('\n');
+        printk("SBI extension not supported: %s\n", extensions[i].ext_name);
       } else {
-        uart_puts("SBI extension supported: ");
-        uart_puts(extensions[i].ext_name);
-        uart_putc('\n');
+        printk("SBI extension supported: %s\n", extensions[i].ext_name);
       }
     }
 
