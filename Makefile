@@ -21,6 +21,7 @@ OBJS = \
 	$(B)/arch/riscv/entry.o \
 	$(B)/init/start.o \
 	$(B)/init/main.o \
+	$(B)/drivers/uart/sbi_uart.o \
 	$(B)/drivers/uart/uart.o \
         $(B)/drivers/watchdog/pmic_wdt.o \
         $(B)/drivers/i2c/rv2_i2c.o \

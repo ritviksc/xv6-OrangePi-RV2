@@ -2,7 +2,7 @@
 // This checks if xv6 is executing or not
 
 #include <sbi/probe.h>
-#include <drivers/uart/uart.h>
+#include <drivers/uart/sbi_uart.h>
 #include <drivers/watchdog/wdt.h>
 #include <drivers/watchdog/pmic_wdt.h>
 #include <arch/riscv/rv2/memlayout.h>

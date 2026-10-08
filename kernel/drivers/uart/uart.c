@@ -14,9 +14,11 @@
 
 #include <mmio.h>
 #include <bitops.h>
+#include <barrier.h>
 #include <xv6/types.h>
 #include <xv6/param.h>
 #include <locks/spinlock.h>
+#include <drivers/uart/sbi_uart.h>
 #include <drivers/uart/uart.h>
 #include <drivers/reset/reset.h>
 #include <drivers/tty/console.h>
@@ -88,21 +90,23 @@ extern volatile int panicked;  // from printk.c
 /** 
  * Deassert the reset for serial UART
  * to set it to a known good state.
- */
+ *
 static void 
 serial_uart_reset()
 { 
   reset_set(APBC_UART1_CLK_RST,BIT(2),0);
 }
+*/
 
 /**  
  * We assume that OpenSBI configures the clock
  * responsible for the serial debug UART as it is the
  * only UART we are really concerned with as of now.
- */
+ *
 static void
 uart_clk_enable()
-{ /* __NOT_IMPLEMENTED__ */ }
+{ * __NOT_IMPLEMENTED__  }
+*/
 
 /**
  * Configure the UART to work properly. We want the UART to be in 8N1 mode,
@@ -114,36 +118,20 @@ uart_clk_enable()
 void
 uartinit()
 {
-  // enable the UART clock
-  uart_clk_enable();
-
-  // deassert the reset
-  serial_uart_reset();
- 
-  // disable interrupts.
-  WriteReg(IER, 0x00);
-
-  // special mode to set baud rate.
-  WriteReg(LCR, LCR_BAUD_LATCH);
-
-  // LSB for baud rate of 115.2K.
-  WriteReg(0, 0x08); // DLL
-
-  // MSB for baud rate of 115.2K.
-  WriteReg(1, 0x00); // DLM
-
-  // leave set-baud mode,
-  // and set word length to 8 bits, no parity, 1 stop bit.
-  WriteReg(LCR, LCR_EIGHT_BITS);
-
-  // reset and enable FIFOs.
-  WriteReg(FCR, FCR_FIFO_ENABLE | FCR_FIFO_CLEAR);
-
-  // enable transmit and receive interrupts.
-  WriteReg(IER, IER_TX_ENABLE | IER_RX_ENABLE);
-
   initlock(&tx_lock, "uart");
+	
+  uint32 lcr = ReadReg(LCR);
+  WriteReg(LCR, lcr & ~LCR_BAUD_LATCH);
+
+  COMPILER_BARRIER;
+
+  uart_puts("A\n");
+
+  uart_puts("B\n");
+  WriteReg(IER, 1 << 6);
+  uart_puts("C\n");
 }
+
 
 /**
  *  transmit buf[] to the uart. it blocks if the

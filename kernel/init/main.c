@@ -15,7 +15,8 @@
 #include <drivers/watchdog/pmic_wdt.h>
 // #include "defs.h"
 
-volatile static int started = 0;
+// volatile static int started = 0;
+// extern void timerinit();
 
 struct
 sbi_ext_info {
@@ -23,7 +24,7 @@ sbi_ext_info {
   const char *ext_name;
 };
 
-// Extension Compatability Table
+/* Extension Compatability Table
 static const
 struct sbi_ext_info extensions[] = {
   { SBI_BASE_EXT, "BASE" },
@@ -45,91 +46,29 @@ struct sbi_ext_info extensions[] = {
 };
 #define EXT_TABLE_SIZE \
         (sizeof(extensions) / sizeof(extensions[0]))
-
+*/
 
 // start() jumps here on all CPUs eventually.
-__attribute__((noreturn)) void
+void
 main()
 {
-  if (cpuid() == 0) {
-    consoleinit();
-    uart_puts("A\n");
-    printkinit();
-    uart_puts("B\n");
-    printk("C\n");
-    uart_puts("D\n");
-    printk("\n");
-    printk("DEVICE:%s\n",DEVICE_NAME);
-    printk("Xv6 kernel is booting...\n");
-    printk("\n");
+  uart_puts("M0: entered main\n");
 
-#if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
-    printk("Little endian architecture detected\n");
-#elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-    printk("Big endian architecture detected\n");
-#elif defined(__BYTE_ORDER__) && defined(__ORDER_PDP_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_PDP_ENDIAN__)
-    printk("Mixed endianness detected\n");
-#else
-    printk("Endianness undefined\n");
-#endif
+  uart_puts("M1: before cpuid\n");
+  int id = cpuid();
+  uart_puts("M2: after cpuid\n");
 
-    int wdt_ret;
-    wdt_start(1000); // 1s timeout
-    wdt_stop();
-    printk("SoC watchdog disabled\n");
+  if (id == 0)
+    uart_puts("M3: cpuid is zero\n");
+  else
+    uart_puts("M3: cpuid is NOT zero\n");
 
-    wdt_ret = pmic_wdt_start(1000);
-    if (wdt_ret)
-      printk("PMIC WDT start failed\n");
+  uart_puts("M4: before consoleinit\n");
 
-    wdt_ret = pmic_wdt_stop();
-    if (wdt_ret)
-      printk("PMIC WDT stop failed\n");
+  consoleinit();
 
-    printk("PMIC watchdog disabled!\n");
-
-    struct sbiret pres;
-    // Probe extensions 
-    for (uint32 i = 0; i < EXT_TABLE_SIZE; i++) {
-      pres = sbi_probe_extension(extensions[i].eid);
-      if (pres.error != SBI_SUCCESS) {
-        printk("PROBE FAILED: %s\n", extensions[i].ext_name);
-      } else if (pres.value == 0) {
-        printk("SBI extension not supported: %s\n", extensions[i].ext_name);
-      } else {
-        printk("SBI extension supported: %s\n", extensions[i].ext_name);
-      }
-    }
-
-    // kinit();            // physical page allocator
-    // kvminit();          // create kernel page table
-    // kvminithart();      // turn on paging
-    // procinit();         // process table
-    trapinit();         // trap vectors
-    trapinithart();     // install kernel trap vector
-    plicinit();         // set up interrupt controller
-    plicinithart();     // ask PLIC for device interrupts
-    w_sstatus(r_sstatus() | SSTATUS_SIE);
-    w_sie(r_sie() | SIE_SEIE | SIE_STIE);
-    // binit();            // buffer cache
-    // iinit();            // inode table
-    // fileinit();         // file table
-    // virtio_disk_init(); // emulated hard disk - will need to replace this
-   // userinit();         // first user process
-    __atomic_thread_fence(__ATOMIC_SEQ_CST);
-    started = 1;
-  } else {
-    while (started == 0)
-      ;
-    __atomic_thread_fence(__ATOMIC_SEQ_CST);
-
-    printk("hart %d starting\n", cpuid());
-    // kvminithart();  // turn on paging
-    trapinithart(); // install kernel trap vector
-    plicinithart(); // ask PLIC for device interrupts
-  }
-
-  // scheduler();
-  __builtin_unreachable();
-
+  uart_puts("M5: after consoleinit\n");
+ 
+  for (;;)
+     ;
 }
