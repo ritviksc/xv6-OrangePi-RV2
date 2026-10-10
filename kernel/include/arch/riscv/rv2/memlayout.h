@@ -21,12 +21,8 @@
 #define TIMER_HZ 10 // timer interrupts per second (~100ms scheduling granularity like QEMU xv6)
 #define TIMER_TICKS (TIMEBASE_FREQ/TIMER_HZ) // clock ticks between one timer interrupt and the next
 
-#define UART0     0xd4017000UL
-#define UART0_IRQ 42
-
 #define WDT_BASE 0xd4080000UL
 #define WDT_IRQ 35
-
 
 // virtio mmio interface
 // #define VIRTIO0     0x10001000
