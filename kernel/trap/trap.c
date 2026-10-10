@@ -229,6 +229,7 @@ devintr()
   if (scause == 0x8000000000000009L) {
     // this is a supervisor external interrupt, via PLIC.
 
+    printk("External interrupt\n");
     // irq indicates which device interrupted.
     int irq = plic_claim();
     printk("External irq id: %d\n", irq);
