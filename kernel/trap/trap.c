@@ -176,10 +176,11 @@ kerneltrap()
   }
 
   // give up the CPU if this is a timer interrupt.
-  if (which_dev == 2) // && myproc() != 0)
+  if (which_dev == 2){ // && myproc() != 0)
     // yield();
     if ((ticks & 1023) == 0)
       printk("kerneltrap() -> timer interrupt\n");
+  }
 
   // the yield() may have caused some traps to occur,
   // so restore trap registers for use by kernelvec.S's sepc instruction.
@@ -230,6 +231,7 @@ devintr()
 
     // irq indicates which device interrupted.
     int irq = plic_claim();
+    printk("External irq id: %d\n", irq);
 
     if (irq == IRQ_UART0) {
       uartintr();
