@@ -178,7 +178,8 @@ kerneltrap()
   // give up the CPU if this is a timer interrupt.
   if (which_dev == 2) // && myproc() != 0)
     // yield();
-    printk("kerneltrap() -> timer interrupt\n");
+    if ((ticks & 1023) == 0)
+      printk("kerneltrap() -> timer interrupt\n");
 
   // the yield() may have caused some traps to occur,
   // so restore trap registers for use by kernelvec.S's sepc instruction.
