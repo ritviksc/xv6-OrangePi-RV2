@@ -108,6 +108,8 @@ uart_write(uint64 base, uint64 reg, uint32 val)
 #define FCR            		2        
 #define FCR_FIFO_ENABLE 	(1 << 0)
 #define FCR_FIFO_CLEAR  	(3 << 1) // clear the content of the two FIFOs
+#define FCR_RX_TRIGGER_1  	(0U << 6)
+#define FCR_TX_TRIGGER_EMPTY	(1U << 3)
 
 #define IIR             	2        // interrupt identification register
 // bits 2:1 tell us what type of interrupt has occured

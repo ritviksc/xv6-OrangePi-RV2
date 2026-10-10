@@ -103,7 +103,7 @@ uartinit()
   WriteReg(LCR, LCR_EIGHT_BITS);
 
   // reset and enable FIFOs.
-  WriteReg(FCR, FCR_FIFO_ENABLE | FCR_FIFO_CLEAR);
+  WriteReg(FCR, FCR_FIFO_ENABLE | FCR_FIFO_CLEAR | FCR_RX_TRIGGER_1);
 
   // enable transmit and receive interrupts.
   WriteReg(IER, IER_UUE | IER_RX_ENABLE);   // | IER_TX_ENABLE);
@@ -148,6 +148,7 @@ uartputc_sync(int c)
   // wait for UART to set Transmit Holding Empty in LSR.
   while ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
     ;
+
   WriteReg(THR, c);
 
  if (panicking == 0)
@@ -234,6 +235,7 @@ uartintr()
 
 rx_handler: // NOTE: goto's are generally discouraged but I feel like they work here ;)
       case RX_INTR: { // drain RX FIFO while discarding erroneous characters
+        printk("In rx_handler\n");
         int c;
         while((c = uartgetc()) != RX_EMPTY){ 
           if (c == ERR_CHAR)
