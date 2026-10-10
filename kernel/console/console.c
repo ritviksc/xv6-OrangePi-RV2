@@ -43,6 +43,8 @@ consputc(int c)
     uartputc_sync(' ');
     uartputc_sync('\b');
   } else {
+    if (c == '\n')
+      uartputc_sync('\r');
     uartputc_sync(c);
   }
 }
