@@ -133,7 +133,7 @@ printk(char *fmt, ...)
   return 0;
 }
 
-void
+__noreturn void
 panic(char *s)
 {
   panicking = 1;
@@ -145,6 +145,8 @@ panic(char *s)
   // reboot system
   for (;;)
     ;
+
+  __unreachable;
 }
 
 void

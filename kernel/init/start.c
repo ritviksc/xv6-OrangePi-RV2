@@ -14,10 +14,10 @@ void timerinit();
 
 
 // entry.S needs one stack per CPU.
-__attribute__((aligned(16))) char stack0[4096];
+__aligned(16) char stack0[4096];
 
 // entry.S jumps here in supervisor mode on stack0.
-__attribute__((noreturn)) void
+__noreturn void
 start()
 {
   w_sstatus(r_sstatus() & ~SSTATUS_SIE);
@@ -31,7 +31,7 @@ start()
 
   main();
 
-  __builtin_unreachable();
+  __unreachable;
   
 }
 

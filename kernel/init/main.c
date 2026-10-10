@@ -50,7 +50,7 @@ struct sbi_ext_info extensions[] = {
 
 
 // start() jumps here on all CPUs eventually.
-__attribute__((noreturn)) void
+__noreturn void
 main()
 {
   consoleinit();
@@ -108,5 +108,5 @@ main()
   for(;;)
     __asm__ __volatile__ ("wfi");
 
-  __builtin_unreachable();   
+  __unreachable;   
 }
