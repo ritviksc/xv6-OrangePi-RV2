@@ -1,6 +1,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <compiler_attributes.h>
+
 typedef unsigned int uint;
 typedef unsigned short ushort;
 typedef unsigned char uchar;
