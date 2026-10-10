@@ -16,7 +16,8 @@
 // #include "defs.h"
 
 // volatile static int started = 0;
-// extern void timerinit();
+
+extern void timerinit();
 
 struct
 sbi_ext_info {
@@ -24,7 +25,7 @@ sbi_ext_info {
   const char *ext_name;
 };
 
-/* Extension Compatability Table
+// Extension Compatability Table
 static const
 struct sbi_ext_info extensions[] = {
   { SBI_BASE_EXT, "BASE" },
@@ -46,29 +47,65 @@ struct sbi_ext_info extensions[] = {
 };
 #define EXT_TABLE_SIZE \
         (sizeof(extensions) / sizeof(extensions[0]))
-*/
+
 
 // start() jumps here on all CPUs eventually.
-void
+__attribute__((noreturn)) void
 main()
 {
-  uart_puts("M0: entered main\n");
-
-  uart_puts("M1: before cpuid\n");
-  int id = cpuid();
-  uart_puts("M2: after cpuid\n");
-
-  if (id == 0)
-    uart_puts("M3: cpuid is zero\n");
-  else
-    uart_puts("M3: cpuid is NOT zero\n");
-
-  uart_puts("M4: before consoleinit\n");
-
   consoleinit();
+  printkinit();
+  printk("\nDEVICE:%s\n", DEVICE_NAME);
+  printk("Xv6 kernel booting...\n");
 
-  uart_puts("M5: after consoleinit\n");
- 
-  for (;;)
-     ;
+#if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+    printk("Little endian architecture detected\n");
+#elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+    printk("Big endian architecture detected\n");
+#elif defined(__BYTE_ORDER__) && defined(__ORDER_PDP_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_PDP_ENDIAN__)
+    printk("Mixed endianness detected\n");
+#else
+    printk("Endianness undefined\n");
+#endif
+
+  int wdt_ret;
+
+  wdt_start(1000); // 1s timeout
+  wdt_stop();
+  printk("SoC watchdog disabled\n");
+
+  wdt_ret = pmic_wdt_start(1000);
+  if (wdt_ret)
+    panic("ERROR: PMIC WDT start failed\n");
+
+  wdt_ret = pmic_wdt_stop();
+  if (wdt_ret)
+    panic("ERROR: PMIC WDT stop failed\n");
+
+  printk("PMIC watchdog disabled!");
+
+ struct sbiret pres;
+  // Probe extensions 
+  for (uint32 i = 0; i < EXT_TABLE_SIZE; i++) {
+    pres = sbi_probe_extension(extensions[i].eid);
+    if (pres.error != SBI_SUCCESS) {
+      printk("PROBE FAILED: %s\n", extensions[i].ext_name);
+    } else if (pres.value == 0) {
+      printk("SBI extension not supported: %s\n", extensions[i].ext_name);
+    } else {
+      printk("SBI extension supported: %s\n", extensions[i].ext_name);
+    }
+  }
+
+  trapinit();         // trap vectors
+  trapinithart();     // install kernel trap vector
+  plicinit();         // set up interrupt controller
+  plicinithart();     // ask PLIC for device interrupts
+  timerinit();
+  __atomic_thread_fence(__ATOMIC_SEQ_CST);
+
+  for(;;)
+    __asm__ __volatile__ ("wfi");
+
+  __builtin_unreachable();   
 }
