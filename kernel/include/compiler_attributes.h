@@ -411,4 +411,21 @@
  */
 #define __fix_address noinline __noclone
 
+/**
+ * The cold attribute on a function informs the compiler that the function is unlikely to be executed. 
+ * The function is optimized for size rather than speed and on many targets it is placed into a special subsection 
+ * of the text section so all cold functions appear close together, improving code locality of non-cold parts of program. 
+ * The paths leading to calls of cold functions within code are marked as unlikely by the branch prediction mechanism. 
+ * It is thus useful to mark functions used to handle unlikely conditions, such as perror, as cold to improve 
+ * optimization of hot functions that do call marked functions in rare occasions.
+ */
+#define __cold		__attribute__((cold))
+
+/**
+ * The hot attribute on a function informs the compiler that the function is a hot spot of the compiled program.
+ * The function is optimized more aggressively and on many targets it is placed 
+ * into a special subsection of the text section so all hot functions appear close together, improving locality.
+ */
+#define __hot		__attribute__((hot))
+
 #endif /* __LINUX_COMPILER_ATTRIBUTES_H */
