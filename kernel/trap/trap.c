@@ -2,6 +2,7 @@
 #include <xv6/types.h>
 #include <xv6/param.h>
 #include <trap/trap.h>
+#include <arch/riscv/rv2/irq.h>
 #include <arch/riscv/rv2/memlayout.h>
 #include <arch/riscv/riscv.h>
 #include <drivers/uart/uart.h>
@@ -229,7 +230,7 @@ devintr()
     // irq indicates which device interrupted.
     int irq = plic_claim();
 
-    if (irq == UART0_IRQ) {
+    if (irq == IRQ_UART0) {
       uartintr();
     } else if (irq) {
       printk("devintr() -> unexpected interrupt irq=%d\n", irq);

@@ -17,7 +17,7 @@
   * interrupt id is directly used (one-to-one), and wont be mapped using a irq
   * number space like in linux. 0 is RESERVED as per the RISC-V specification.
   */
-static const uint32 hwirq_ids[] = {UART0_IRQ};
+static const uint32 hwirq_ids[] = {IRQ_UART0};
 static const uint32 num_dev = (sizeof(hwirq_ids) / sizeof(hwirq_ids[0]));
 
 /**
