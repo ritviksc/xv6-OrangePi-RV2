@@ -161,7 +161,7 @@ uartputc_sync(int c)
  * Return -2 if an error occured
  * Return character otherwise
  */
-static int
+int
 uartgetc()
 {
    uint32 lsr = ReadReg(LSR);

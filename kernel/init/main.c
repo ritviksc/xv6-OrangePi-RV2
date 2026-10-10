@@ -18,6 +18,7 @@
 // volatile static int started = 0;
 
 extern void timerinit();
+extern int uartgetc();
 
 struct
 sbi_ext_info {
@@ -102,11 +103,30 @@ main()
   trapinithart();     // install kernel trap vector
   plicinit();         // set up interrupt controller
   plicinithart();     // ask PLIC for device interrupts
+  printk("UART priority = %x\n",
+		         readl((volatile void *)PLIC_PRIORITY(42)));
+
+  printk("UART enable bank = %x\n",
+		         readl((volatile void *)PLIC_SENABLE(cpuid(), 1)));
+
+  printk("PLIC threshold = %x\n",
+		         readl((volatile void *)PLIC_SPRIORITY(cpuid())));
+  
+  printk("sie = %lx\n", r_sie());
+  printk("sstatus = %lx\n", r_sstatus());
+  printk("UART IER = %x\n", ReadReg(IER));
+  printk("UART LSR = %x\n", ReadReg(LSR));
+
   timerinit();
   __atomic_thread_fence(__ATOMIC_SEQ_CST);
 
-  for(;;)
-    __asm__ __volatile__ ("wfi");
+  for(;;) {
+    if (ReadReg(LSR) & 0x01) {
+      int c = uartgetc();
+      if (c >= 0)
+        printk("Received character: %c\n", c);					    }
+  }
+    
 
   __unreachable;   
 }
