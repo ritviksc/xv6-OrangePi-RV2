@@ -57,7 +57,7 @@ main()
   printkinit();
   printk("\nDEVICE:%s\n", DEVICE_NAME);
   printk("Xv6 kernel booting...\n");
-
+  
 #if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
     printk("Little endian architecture detected\n");
 #elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
@@ -68,6 +68,7 @@ main()
     printk("Endianness undefined\n");
 #endif
 
+  printk("Hart %d starting\n", cpuid());
   int wdt_ret;
 
   wdt_start(1000); // 1s timeout
@@ -82,7 +83,7 @@ main()
   if (wdt_ret)
     panic("ERROR: PMIC WDT stop failed\n");
 
-  printk("PMIC watchdog disabled!");
+  printk("PMIC watchdog disabled\n");
 
  struct sbiret pres;
   // Probe extensions 
