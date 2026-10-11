@@ -37,8 +37,9 @@ clear_bss:
 	addi t0,t0,8
 	j clear_bss
 
-call_start: # __attribute__((noreturn)
+call_start: # __noreturn
         # jump to start() in start.c
         call start
 spin:
         j spin # Should not reach here!
+	# __unreachable;
