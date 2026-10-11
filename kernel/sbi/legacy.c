@@ -21,7 +21,7 @@ sbi_lgcy_ecall(
   register sbi_arg_t arg4_val __asm__("a4") = arg4;
   register sbi_arg_t arg5_val __asm__("a5") = arg5;
 
-  __asm__ volatile (
+  __asm__ __volatile__ (
        "ecall"
        : "+r"(arg0_val)
        : "r"(arg1_val),
@@ -43,7 +43,7 @@ sbi_lgcy_ecall(
 sbi_ret_t 
 sbi_set_timer(sbi_arg_t stime_value)
 {
-  return sbi_lgcy_ecall(SBI_LGCY_SET_TIMER,stime_value,0,0,0,0,0);
+  return sbi_lgcy_ecall(SBI_LGCY_SET_TIMER, stime_value, 0, 0, 0, 0, 0);
 }
 
 // Write a char to debug console
@@ -51,7 +51,7 @@ sbi_set_timer(sbi_arg_t stime_value)
 sbi_ret_t
 sbi_console_putchar(sbi_arg_t ch)
 {
-  return sbi_lgcy_ecall(SBI_LGCY_CNSLE_PUTCHR,ch,0,0,0,0,0);
+  return sbi_lgcy_ecall(SBI_LGCY_CNSLE_PUTCHR, ch, 0, 0, 0, 0, 0);
 }
 
 // Read a char from debug console
@@ -59,16 +59,16 @@ sbi_console_putchar(sbi_arg_t ch)
 sbi_ret_t
 sbi_console_getchar(void)
 {
-  return sbi_lgcy_ecall(SBI_LGCY_CNSLE_GETCHR,0,0,0,0,0,0);
+  return sbi_lgcy_ecall(SBI_LGCY_CNSLE_GETCHR, 0, 0, 0, 0, 0, 0);
 }
 
 // Clears the pending IPIs if any. IPI is cleared only in the hart for which this
 // SBI call is invoked
 // Returns 0 upon success or an implementation specfic negative error code
 sbi_ret_t
-sbi_clear_ipi(void)
+sbi_clear_ipi()
 {
-  return sbi_lgcy_ecall(SBI_LGCY_CLR_IPI,0,0,0,0,0,0);
+  return sbi_lgcy_ecall(SBI_LGCY_CLR_IPI, 0, 0, 0, 0, 0, 0);
 }
 
 // Send an inter-processor interrupt to all harts defined in hart_mask
@@ -76,7 +76,7 @@ sbi_clear_ipi(void)
 sbi_ret_t
 sbi_send_ipi(const sbi_arg_t *hart_mask)
 {
-  return sbi_lgcy_ecall(SBI_LGCY_SEND_IPI,(sbi_arg_t)hart_mask,0,0,0,0,0);
+  return sbi_lgcy_ecall(SBI_LGCY_SEND_IPI, (sbi_arg_t)hart_mask, 0, 0, 0, 0, 0);
 }
 
 // Instructs remote harts to execute the FENC.I instruction
@@ -84,7 +84,7 @@ sbi_send_ipi(const sbi_arg_t *hart_mask)
 sbi_ret_t
 sbi_remote_fence_i(const sbi_arg_t *hart_mask)
 {
-  return sbi_lgcy_ecall(SBI_LGCY_RMTE_FENCE_I,(sbi_arg_t)hart_mask,0,0,0,0,0);
+  return sbi_lgcy_ecall(SBI_LGCY_RMTE_FENCE_I, (sbi_arg_t)hart_mask, 0, 0, 0, 0, 0);
 }
 
 // Instructs the remote harts to execute one or more SFENCE.VMA instructions,
@@ -95,7 +95,7 @@ sbi_remote_sfence_vma(const sbi_arg_t *hart_mask,
                             sbi_arg_t start,
                             sbi_arg_t end)
 {
-  return sbi_lgcy_ecall(SBI_LGCY_SFENCE_VMA,(sbi_arg_t)hart_mask,start,end,0,0,0);
+  return sbi_lgcy_ecall(SBI_LGCY_SFENCE_VMA, (sbi_arg_t)hart_mask, start, end, 0, 0, 0);
 }
 
 // Instruct the remote harts to execute on or more SFENCE.VMA insructions,
@@ -108,14 +108,15 @@ sbi_remote_sfence_vma_asid(const sbi_arg_t *hart_mask,
                                  sbi_arg_t end,
                                  sbi_arg_t asid)
 {
-  return sbi_lgcy_ecall(SBI_LGCY_SFENCE_VMA_ASID,(sbi_arg_t)hart_mask,start,end,asid,0,0);
+  return sbi_lgcy_ecall(SBI_LGCY_SFENCE_VMA_ASID, (sbi_arg_t)hart_mask, start, end, asid, 0, 0);
 }
 
 // Puts harts in shutdown state from supervisor point of view
 // Doesn't return irrespective of the call fails or succeeds
-void sbi_shutdown(void)
+__noreturn void sbi_shutdown()
 {
-  sbi_lgcy_ecall(SBI_LGCY_SHUTDOWN,0,0,0,0,0,0);
+  sbi_lgcy_ecall(SBI_LGCY_SHUTDOWN, 0, 0, 0, 0, 0, 0);
+  __unreachable;
 }
 
 
