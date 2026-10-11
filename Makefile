@@ -32,6 +32,7 @@ OBJS = \
         $(B)/sbi/legacy.o \
         $(B)/sbi/ext.o \
         $(B)/sbi/probe.o \
+        $(B)/sbi/hsm.o \
 	$(B)/trap/kernelvec.o \
         $(B)/trap/trap.o \
 	$(B)/console/console.o \
