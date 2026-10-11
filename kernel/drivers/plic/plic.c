@@ -58,26 +58,47 @@ void
 plicinithart()
 {
   int hart = cpuid();
-  uint32 banks[NUM_BANKS] = {0};
+
+  // Disable each PLIC interrupt source using the KY-specific sequence.
+  for (uint32 irq = 1; irq <= PLIC_MAX_SOURCE_ID; irq++) {
+    uint32 bank = irq / 32;
+    uint32 bit = 1U << (irq & 31);
+
+    volatile void *reg = (volatile void *)PLIC_SENABLE(hart, bank);
+
+    // KY-specific quirk: complete before disabling.
+    writel(irq, (volatile void *)PLIC_SCLAIM(hart));
+
+    uint32 val = readl(reg);
+    writel(val & ~bit, reg);
+
+    // KY-specific quirk: clear pending, which maybe triggered by uboot
+    writel(0, (volatile void*)(PLIC_PENDING + 4 * bank));
+
+  }
+
+  // Enable the interrupts used by xv6.
   for (uint32 i = 0; i < num_dev; i++) {
     uint32 irq = hwirq_ids[i];
-    if (irq > 0 && irq <= PLIC_MAX_SOURCE_ID) {
-      uint32 bank = irq/32;
-      banks[bank] |= 1U << (irq & 31);
-      // writel(val,PLIC_SENABLE(hart,irq)); 
-    } else {
-      // printk("plicinithart() -> Invalid hwirq id: %d\n", irq);       
+
+    if (irq == 0 || irq > PLIC_MAX_SOURCE_ID)
       continue;
-    }
+
+    uint32 bank = irq / 32;
+    uint32 bit = 1U << (irq & 31);
+
+    volatile void *reg = (volatile void *)PLIC_SENABLE(hart, bank);
+
+    uint32 val = readl(reg);
+    writel(val | bit, reg);
+
+    // KY-specific quirk: complete after enabling.
+    writel(irq, (volatile void *)PLIC_SCLAIM(hart));
   }
 
-  for (uint32 i = 0 ; i < NUM_BANKS; i++) {
-    writel(banks[i], (volatile void *)PLIC_SENABLE(hart, i));
-  }
-
-  // set this hart's S-mode priority threshold to 0.
-  writel(PLIC_ENABLE_THRESHOLD, (volatile void *)PLIC_SPRIORITY(hart));
-
+  // Accept interrupts with priority greater than zero.
+  writel(PLIC_ENABLE_THRESHOLD,
+         (volatile void *)PLIC_SPRIORITY(hart));
 }
 
 /**
