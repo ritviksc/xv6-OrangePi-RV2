@@ -9,7 +9,7 @@
 extern void main();
 
 // entry.S needs one stack per CPU.
-__aligned(16) char stack0[4096];
+__aligned(16) char stack0[4096 * NCPU];
 
 // entry.S jumps here in supervisor mode on stack0.
 __noreturn void

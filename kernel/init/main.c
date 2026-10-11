@@ -10,7 +10,8 @@
 #include <arch/riscv/rv2/memlayout.h>
 #include <arch/riscv/rv2/arch.h>
 #include <arch/riscv/riscv.h>
-#include <sbi/probe.h>
+#include <sbi/sbi_probe.h>
+#include <sbi/sbi_hsm.h>
 #include <drivers/watchdog/wdt.h>
 #include <drivers/watchdog/pmic_wdt.h>
 // #include "defs.h"
@@ -18,38 +19,7 @@
 // volatile static int started = 0;
 
 volatile uint64 timer;
-
 extern int uartgetc();
-
-struct
-sbi_ext_info {
-  sbi_eid_t eid;
-  const char *ext_name;
-};
-
-// Extension Compatability Table
-static const
-struct sbi_ext_info extensions[] = {
-  { SBI_BASE_EXT, "BASE" },
-  { SBI_TIME_EXT, "TIME" },
-  { SBI_IPI_EXT,  "IPI"  },
-  { SBI_RFNC_EXT, "RFNC" },
-  { SBI_HSM_EXT,  "HSM"  },
-  { SBI_SRST_EXT, "SRST" },
-  { SBI_PMU_EXT,  "PMU"  },
-  { SBI_DBCN_EXT, "DBCN" },
-  { SBI_SUSP_EXT, "SUSP" },
-  { SBI_CPPC_EXT, "CPPC" },
-  { SBI_NACL_EXT, "NACL" },
-  { SBI_STA_EXT,  "STA"  },
-  { SBI_SSE_EXT,  "SSE"  },
-  { SBI_FWFT_EXT, "FWFT" },
-  { SBI_DBTR_EXT, "DBTR" },
-  { SBI_MPXY_EXT, "MPXY" }
-};
-#define EXT_TABLE_SIZE \
-        (sizeof(extensions) / sizeof(extensions[0]))
-
 
 // start() jumps here on all CPUs eventually.
 __noreturn __cold void
@@ -72,6 +42,7 @@ main()
 
   printk("Hart %d starting\n", cpuid());
 
+  // disable both wdts for now
   int wdt_ret;
   wdt_start(1000); // 1s timeout
   wdt_stop();
@@ -84,19 +55,15 @@ main()
     panic("ERROR: PMIC WDT stop failed\n");
   printk("PMIC watchdog disabled\n");
 
-  struct sbiret pres;
-  // Probe extensions 
-  for (uint32 i = 0; i < EXT_TABLE_SIZE; i++) {
-    pres = sbi_probe_extension(extensions[i].eid);
-    if (pres.error != SBI_SUCCESS) {
-      printk("PROBE FAILED: %s\n", extensions[i].ext_name);
-    } else if (pres.value == 0) {
-      printk("SBI extension not supported: %s\n", extensions[i].ext_name);
-    } else {
-      printk("SBI extension supported: %s\n", extensions[i].ext_name);
-    }
+  struct sbiret ret;
+  //check hart status(es) for testing
+  for (uint32 i = 0; i < NCPU; i++){
+    ret = sbi_hart_get_status(i);
+    printk("hart state: %ld\n", ret.value);  
+
   }
 
+  sbiprobe();	      // probe sbi extensions
   trapinit();         // trap vectors
   trapinithart();     // install kernel trap vector
   plicinit();         // set up interrupt controller
