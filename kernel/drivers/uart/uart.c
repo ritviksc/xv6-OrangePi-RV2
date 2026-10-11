@@ -235,7 +235,6 @@ uartintr()
 
 rx_handler: // NOTE: goto's are generally discouraged but I feel like they work here ;)
       case RX_INTR: { // drain RX FIFO while discarding erroneous characters
-        printk("In rx_handler\n");
         int c;
         while((c = uartgetc()) != RX_EMPTY){ 
           if (c == ERR_CHAR)

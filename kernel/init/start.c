@@ -6,12 +6,7 @@
 #include <sbi/sbi_legacy.h>
 #include <drivers/uart/sbi_uart.h>
 
-uint64 timer;
-
-extern void kernelvec();
 extern void main();
-void timerinit();
-
 
 // entry.S needs one stack per CPU.
 __aligned(16) char stack0[4096];
@@ -20,14 +15,11 @@ __aligned(16) char stack0[4096];
 __noreturn void
 start()
 {
-  w_sstatus(r_sstatus() & ~SSTATUS_SIE);
+  intr_off();
   w_sie(0);
 
   w_satp(0);
-  __asm__ __volatile__ ("sfence.vma" ::: "memory");
-
-  w_sie(SIE_SEIE | SIE_STIE);
-  w_sstatus(r_sstatus() | SSTATUS_SIE);
+  sfence_vma();
 
   main();
 
@@ -35,10 +27,4 @@ start()
   
 }
 
-void
-timerinit()
-{
-  timer = r_time();
-  timer +=  TIMER_TICKS;
-  w_stimecmp(timer);
-}
+

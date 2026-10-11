@@ -17,7 +17,8 @@
 
 // volatile static int started = 0;
 
-extern void timerinit();
+volatile uint64 timer;
+
 extern int uartgetc();
 
 struct
@@ -51,14 +52,14 @@ struct sbi_ext_info extensions[] = {
 
 
 // start() jumps here on all CPUs eventually.
-__noreturn void
+__noreturn __cold void
 main()
 {
   consoleinit();
   printkinit();
   printk("\nDEVICE:%s\n", DEVICE_NAME);
   printk("Xv6 kernel booting...\n");
-  
+
 #if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
     printk("Little endian architecture detected\n");
 #elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
@@ -70,23 +71,20 @@ main()
 #endif
 
   printk("Hart %d starting\n", cpuid());
-  int wdt_ret;
 
+  int wdt_ret;
   wdt_start(1000); // 1s timeout
   wdt_stop();
   printk("SoC watchdog disabled\n");
-
   wdt_ret = pmic_wdt_start(1000);
   if (wdt_ret)
     panic("ERROR: PMIC WDT start failed\n");
-
   wdt_ret = pmic_wdt_stop();
   if (wdt_ret)
     panic("ERROR: PMIC WDT stop failed\n");
-
   printk("PMIC watchdog disabled\n");
 
- struct sbiret pres;
+  struct sbiret pres;
   // Probe extensions 
   for (uint32 i = 0; i < EXT_TABLE_SIZE; i++) {
     pres = sbi_probe_extension(extensions[i].eid);
@@ -103,21 +101,8 @@ main()
   trapinithart();     // install kernel trap vector
   plicinit();         // set up interrupt controller
   plicinithart();     // ask PLIC for device interrupts
-  printk("UART priority = %x\n",
-		         readl((volatile void *)PLIC_PRIORITY(42)));
-
-  printk("UART enable bank = %x\n",
-		         readl((volatile void *)PLIC_SENABLE(cpuid(), 1)));
-
-  printk("PLIC threshold = %x\n",
-		         readl((volatile void *)PLIC_SPRIORITY(cpuid())));
-  
-  printk("sie = %lx\n", r_sie());
-  printk("sstatus = %lx\n", r_sstatus());
-  printk("UART IER = %x\n", ReadReg(IER));
-  printk("UART LSR = %x\n", ReadReg(LSR));
-
-  timerinit();
+  irqinit();	      // enable external and timer irqs for this hart
+  timerinit(); 	      // schedule first timer interrupt
   __atomic_thread_fence(__ATOMIC_SEQ_CST);
 
   for(;;) {

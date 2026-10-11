@@ -20,7 +20,7 @@ _entry:
 	# a0 = hartid, a1 = dtb pointer - both left untouched in case
         # devicetree support or hartid reuse is added later.
         la sp, stack0
-	li tp, 0 	# Save hartid in tp register
+	mv tp, a0 	# Save hartid in tp register
 
         li a2, 1024*4
         addi a3, tp, 1  

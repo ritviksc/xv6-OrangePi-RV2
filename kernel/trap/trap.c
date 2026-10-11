@@ -14,7 +14,7 @@
 struct spinlock tickslock;
 uint ticks;
 
-extern uint64 timer;
+extern volatile uint64 timer;
 extern char trampoline[], uservec[];
 
 // kernelvec.S calls kerneltrap().
@@ -220,7 +220,7 @@ clockintr()
  * 	   1 if other device
  * 	   0 if not recognized
  */
-int
+__hot int
 devintr()
 {
   uint64 scause = r_scause();
@@ -247,7 +247,7 @@ devintr()
      * device wont be "pending" potentially 
      * causing an interrupt storm.
      */
-    if (irq)
+    if (irq != 0)
       plic_complete(irq);
 
     return 1;
