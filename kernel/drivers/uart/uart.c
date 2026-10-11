@@ -101,9 +101,11 @@ uartinit()
   // leave set-baud mode,
   // and set word length to 8 bits, no parity.
   WriteReg(LCR, LCR_EIGHT_BITS);
-
+ 
   // reset and enable FIFOs.
   WriteReg(FCR, FCR_FIFO_ENABLE | FCR_FIFO_CLEAR | FCR_RX_TRIGGER_1);
+
+  WriteReg(MCR, ReadReg(MCR) | OUT2_SIGNAL);
 
   // enable transmit and receive interrupts.
   WriteReg(IER, IER_UUE | IER_RX_ENABLE);   // | IER_TX_ENABLE);

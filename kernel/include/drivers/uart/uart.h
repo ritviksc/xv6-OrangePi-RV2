@@ -124,6 +124,9 @@ uart_write(uint64 base, uint64 reg, uint32 val)
 #define LCR_BAUD_LATCH  	(1 << 7) // special mode to set baud rate
 
 
+#define MCR			3
+#define OUT2_SIGNAL		(1 << 3)
+
 #define LSR             	5        // line status register
 #define LSR_RX_READY    	(1 << 0) // input is waiting to be read from RHR
 #define LSR_TX_IDLE     	(1 << 5) // THR can accept another character to send
